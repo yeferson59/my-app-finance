@@ -2,44 +2,13 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { useTheme } from 'next-themes'
-import { Menu, X, Moon, Sun } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Switch } from "@/components/ui/switch"
 import { cn } from "@/lib/utils"
+import MenuItem from './menuItems'
+import ThemeToggle from './themeToggle'
 
-// Componente para los items del menú
-const MenuItem = ({ href, children }: { href: string; children: React.ReactNode }) => (
-  <li>
-    <Link href={href} className="text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors">
-      {children}
-    </Link>
-  </li>
-)
-
-// Componente para el toggle de tema
-const ThemeToggle = () => {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => setMounted(true), [])
-
-  if (!mounted) return null
-
-  return (
-    <div className="flex items-center space-x-2">
-      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Switch
-        id="theme-toggle"
-        checked={theme === 'dark'}
-        onCheckedChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      />
-      <Moon className="h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-      <span className="sr-only">Toggle theme</span>
-    </div>
-  )
-}
 
 // Componente principal del Header
 export default function Header() {
