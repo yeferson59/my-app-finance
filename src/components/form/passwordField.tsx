@@ -11,7 +11,7 @@ interface PasswordFieldProps {
   required?: boolean;
 }
 
-export function PasswordField({ id, label, required = false }: PasswordFieldProps) {
+export default function PasswordField({ id, label, required = false }: PasswordFieldProps) {
   const [showPassword, setShowPassword] = useState(false)
 
   return (

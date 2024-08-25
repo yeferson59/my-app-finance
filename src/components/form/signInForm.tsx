@@ -1,6 +1,6 @@
-import { AuthForm } from './authForm'
-import { FormField } from './formField'
-import { PasswordField } from './passwordField'
+import AuthForm from './authForm'
+import FormField from './formField'
+import PasswordField from './passwordField'
 
 async function signIn(prevState: any, formData: FormData) {
   'use server'

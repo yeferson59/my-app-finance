@@ -8,7 +8,7 @@ interface FormFieldProps {
   required?: boolean;
 }
 
-export function FormField({ id, label, type = "text", required = false }: FormFieldProps) {
+export default function FormField({ id, label, type = "text", required = false }: FormFieldProps) {
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>{label}</Label>

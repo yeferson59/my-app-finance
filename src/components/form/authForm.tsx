@@ -12,7 +12,7 @@ interface AuthFormProps {
   children: React.ReactNode;
 }
 
-export function AuthForm({ title, description, submitLabel, action, children }: AuthFormProps) {
+export default function AuthForm({ title, description, submitLabel, action, children }: AuthFormProps) {
   const [state, formAction] = useFormState(action, { message: '' })
 
   return (
