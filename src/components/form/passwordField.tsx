@@ -9,9 +9,10 @@ interface PasswordFieldProps {
   id: string;
   label: string;
   required?: boolean;
+  password?: string[]
 }
 
-export default function PasswordField({ id, label, required = false }: PasswordFieldProps) {
+export default function PasswordField({ id, label, required = false, password, ...props }: PasswordFieldProps) {
   const [showPassword, setShowPassword] = useState(false)
 
   return (
@@ -23,6 +24,8 @@ export default function PasswordField({ id, label, required = false }: PasswordF
           name={id}
           type={showPassword ? "text" : "password"}
           required={required}
+          aria-invalid={!!password}
+          aria-describedby={password ? "email-error" : undefined}
         />
         <button
           type="button"
@@ -36,6 +39,9 @@ export default function PasswordField({ id, label, required = false }: PasswordF
           )}
         </button>
       </div>
+      {password && (
+        <p id="password-error" className="text-sm text-red-500">{password[0]}</p>
+      )}
     </div>
   )
 }

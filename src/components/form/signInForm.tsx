@@ -1,24 +1,24 @@
+'use client'
+
+import { useFormState } from 'react-dom'
+import { signInAction } from '@/lib/actions/login'
 import AuthForm from './authForm'
 import FormField from './formField'
 import PasswordField from './passwordField'
-
-async function signIn(prevState: any, formData: FormData) {
-  'use server'
-  // Aquí iría la lógica real de inicio de sesión
-  console.log('Datos del formulario:', Object.fromEntries(formData))
-  return { message: 'Inicio de sesión exitoso' }
-}
+import ButtonAuth from './buttonAuth'
 
 export function SignInForm() {
+  const [state, formAction] = useFormState(signInAction, undefined)
   return (
     <AuthForm
-      title="Iniciar Sesión"
-      description="Accede a tu cuenta"
-      submitLabel="Iniciar Sesión"
-      action={signIn}
+      title='Iniciar sessión'
+      description='Accede a tu cuenta'
     >
-      <FormField id="email" label="Correo electrónico" type="email" required />
-      <PasswordField id="password" label="Contraseña" required />
+      <form action={formAction} className="space-y-4">
+        <FormField id='email' label='Correo electrónico' type='email' required messages={state?.errors?.email} errorMessage='error-email' />
+        <PasswordField id='password' label='Contraseña' password={state?.errors?.password} required />
+        <ButtonAuth labelSubmit='Iniciar sesión' message={state?.message} send='Iniciando...' />
+      </form>
     </AuthForm>
   )
 }
