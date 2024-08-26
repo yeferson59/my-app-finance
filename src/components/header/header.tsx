@@ -41,10 +41,10 @@ export default function Header() {
   const authItems = (
     <div className="flex flex-col space-y-2 lg:flex-row lg:space-y-0 lg:space-x-2">
       <Button variant="outline" asChild>
-        <Link href="/iniciar-sesion">Iniciar sesión</Link>
+        <Link href="/auth/sign-in">Iniciar sesión</Link>
       </Button>
       <Button asChild>
-        <Link href="/registrarse">Registrarse</Link>
+        <Link href="/auth/sign-up">Registrarse</Link>
       </Button>
     </div>
   )
