@@ -4,11 +4,25 @@ import { signIn } from "@/auth"
 import { SignInFormSchema, SignUpFormSchema } from "../definitions/formSchema"
 import { SignInForm, SignUpForm } from "../definitions/type"
 import { AuthError } from "next-auth"
+import { getUserByEmail } from "../data"
+import bcrypt from "bcrypt"
+import db from "../supabase/supabase"
 
 export async function signUp(prevState: SignUpForm, formData: FormData) {
   const { success, data, error } = SignUpFormSchema.safeParse(Object.fromEntries(formData))
   if (!success) return { errors: error.flatten().fieldErrors }
-  console.log(data)
+  const userFound = await getUserByEmail(data.email)
+  if (userFound) return { message: 'Correo ya existente' }
+  const { name, lastName, email, password, username } = data
+  const hash = await bcrypt.hash(password, 15)
+  const { error: errorDb } = await db.schema("next_auth").from("users").insert({
+    name: name,
+    last_name: lastName,
+    username: username,
+    email: email,
+    password: hash
+  })
+  if (errorDb) return { message: 'Ocurrio un error' }
   return { message: 'Registro exitoso' }
 }
 
