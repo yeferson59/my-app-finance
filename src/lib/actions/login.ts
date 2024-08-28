@@ -5,8 +5,10 @@ import { SignInFormSchema, SignUpFormSchema } from "../definitions/formSchema"
 import { SignInForm, SignUpForm } from "../definitions/type"
 import { AuthError } from "next-auth"
 import { getUserByEmail } from "../data"
-import bcrypt from "bcrypt"
 import db from "../supabase/supabase"
+import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache"
+import { bcrypt } from "../encrypt"
 
 export async function signUp(prevState: SignUpForm, formData: FormData) {
   const { success, data, error } = SignUpFormSchema.safeParse(Object.fromEntries(formData))
@@ -23,7 +25,13 @@ export async function signUp(prevState: SignUpForm, formData: FormData) {
     password: hash
   })
   if (errorDb) return { message: 'Ocurrio un error' }
-  return { message: 'Registro exitoso' }
+  await signIn("credentials", {
+    email,
+    password
+  })
+
+  revalidatePath('/auth/sign-in')
+  redirect('/dashboard')
 }
 
 export async function signInGoogle() {
@@ -50,6 +58,17 @@ export async function signInGithub() {
 export async function signInAction(prevState: SignInForm, formData: FormData) {
   const { success, data, error } = SignInFormSchema.safeParse(Object.fromEntries(formData))
   if (!success) return { errors: error.flatten().fieldErrors }
-  await signIn("credentials", data)
-  return { message: 'Registro exitoso' }
+  try {
+    await signIn("credentials", data)
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return { message: 'Credenciales invalidas' }
+        default:
+          return { message: 'Ocurrió un error' }
+      }
+    }
+    throw error
+  }
 }

@@ -3,6 +3,8 @@ import { SupabaseAdapter } from "@auth/supabase-adapter"
 import Google from "next-auth/providers/google"
 import Github from "next-auth/providers/github"
 import credentials from "next-auth/providers/credentials"
+import { SignInFormSchema } from "./lib/definitions/formSchema"
+import { getUserVerified } from "./lib/data"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -13,14 +15,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         email: {},
         password: {}
       },
-      async authorize(credentials, request) {
-        console.log(credentials, request)
-        return {
-          id: "1",
-          name: "Yeferson",
-          email: "yefersontoloza59@gmail.com"
+      async authorize(credentials) {
+        const { success, data } = await SignInFormSchema.safeParseAsync(credentials)
+        if (!success) {
+          throw new Error('Credenciales invalidas')
         }
-      },
+        const { email, password } = data
+        const user = await getUserVerified(email, password)
+        if (!user) return user
+        return user
+      }
     })
   ],
   adapter: SupabaseAdapter({
